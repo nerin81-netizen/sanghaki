@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>심플머니</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#333333">
+
+    <!-- iOS Support -->
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <link rel="stylesheet" href="style.css?v=9">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Nanum+Gothic:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <div class="app-container">
+        <!-- Header & Tabs -->
+        <header id="header" class="main-header">
+            <div class="tab-container">
+                <button id="tab-today" class="tab-btn active" data-target="view-today">오늘</button>
+                <button id="tab-month" class="tab-btn" data-target="view-month">월간</button>
+                <button id="tab-analysis" class="tab-btn" data-target="view-analysis">분석</button>
+                <button id="btn-open-recurring-tab" class="tab-btn" style="color: var(--text-secondary);"><i
+                        class="fa-solid fa-repeat"></i></button>
+            </div>
+            <div class="header-right">
+                <div id="current-user-display" class="user-badge">
+                    <span class="user-icon"></span>
+                    <span class="user-name"></span>
+                </div>
+                <button id="btn-setting" class="settings-btn"><i class="fa-solid fa-gear"></i></button>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main id="main-content">
+
+            <!-- VIEW A: Today Dashboard -->
+            <section id="view-today" class="view-section active">
+
+                <!-- Month Navigation -->
+                <div class="month-nav">
+                    <button id="btn-prev-year" class="nav-arrow"><i class="fa-solid fa-angles-left"></i></button>
+                    <button id="btn-prev-month" class="nav-arrow"><i class="fa-solid fa-caret-left"></i></button>
+                    <h2 id="month-display" class="current-month">--월</h2>
+                    <button id="btn-next-month" class="nav-arrow"><i class="fa-solid fa-caret-right"></i></button>
+                    <button id="btn-next-year" class="nav-arrow"><i class="fa-solid fa-angles-right"></i></button>
+                </div>
+
+                <!-- Hero Section: Total Expense -->
+                <div class="hero-section">
+                    <div class="hero-label">이번 달 쓴 돈</div>
+                    <div id="display-total" class="hero-amount">0원</div>
+
+                    <div class="budget-bar-container">
+                        <div class="budget-container">
+                            <div class="budget-bar-bg">
+                                <div id="budget-bar" class="budget-fill" style="width: 0%;"></div>
+                            </div>
+                            <div id="budget-msg" class="budget-message">예산 계산 중...</div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Dashboard Type Toggle -->
+                <div class="type-selector" style="margin-bottom: 10px;">
+                    <button id="btn-filter-expense" class="type-btn active">지출</button>
+                    <button id="btn-filter-income" class="type-btn">수입</button>
+                </div>
+
+                <!-- Filter Bar -->
+                <div class="filter-bar">
+                    <div id="filter-scroll-container" class="filter-scroll-container">
+                        <!-- Filter chips injected via JS -->
+                    </div>
+                </div>
+
+                <!-- Inline Input Form -->
+                <div id="inline-input-container" class="inline-input-box" style="display:none;">
+                    <div class="inline-row-top">
+                        <div style="position:relative; display:inline-block;">
+                            <select id="inline-cat-select" class="btn-inline-cat"
+                                style="padding-right: 24px; appearance:none;">
+                                <!-- Options injected via JS -->
+                            </select>
+                            <i class="fa-solid fa-chevron-down"
+                                style="position:absolute; right:10px; top:50%; transform:translateY(-50%); font-size:0.7rem; pointer-events:none;"></i>
+                        </div>
+                        <input type="date" id="inline-date" class="inline-date-input">
+                    </div>
+
+                    <!-- Row 2: Amount (Large, Full Width) -->
+                    <div class="inline-row-mid" style="display:flex; align-items:center; gap:8px;">
+                        <button id="btn-inline-recurring" class="btn-recurring"
+                            style="padding: 5px 8px; font-size: 0.75rem; border-radius: 8px;">매월</button>
+                        <input type="tel" id="inline-amount" class="inline-input amount" placeholder="금액"
+                            inputmode="decimal" autocomplete="off" style="flex:1;">
+                    </div>
+
+                    <!-- Row 3: Memo & Save -->
+                    <div class="inline-row-bot">
+                        <div style="position: relative; flex: 1; display:flex;">
+                            <div class="input-helper-btns"
+                                style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%); z-index: 10; display:flex; gap:5px;">
+                                <button id="btn-add-tag" class="btn-mini-tag">#</button>
+                                <button id="btn-search-tag" class="btn-mini-tag"><i
+                                        class="fa-solid fa-magnifying-glass"></i></button>
+                            </div>
+                            <input type="text" id="inline-memo" class="inline-input memo" placeholder="내용"
+                                style="width:100%; padding-left: 75px;">
+                            <ul id="memo-suggestions" class="suggestion-list hidden"></ul>
+                        </div>
+                        <button id="btn-inline-save" class="btn-inline-save"><i class="fa-solid fa-check"></i></button>
+                    </div>
+                </div>
+
+
+                <!-- Expense List -->
+                <div id="list-container" class="expense-list-container">
+                    <ul class="expense-list">
+                        <li class="empty-state">내역이 없습니다.</li>
+                    </ul>
+                </div>
+
+                <!-- Comparison Footer (New Position) -->
+                <div id="comparison-footer" class="comparison-footer">
+                    <span id="comp-text-full">전월 동기 대비 계산 중...</span>
+                </div>
+            </section>
+
+            <!-- VIEW B: Month Analysis -->
+            <section id="view-month" class="view-section hidden">
+                <!-- Month View Header (Date Nav reused logic) -->
+                <div class="month-nav">
+                    <button id="btn-prev-year-cal" class="nav-arrow"><i class="fa-solid fa-angles-left"></i></button>
+                    <button id="btn-prev-month-cal" class="nav-arrow"><i class="fa-solid fa-caret-left"></i></button>
+                    <h2 id="month-display-cal" class="current-month">--월</h2>
+                    <button id="btn-next-month-cal" class="nav-arrow"><i class="fa-solid fa-caret-right"></i></button>
+                    <button id="btn-next-year-cal" class="nav-arrow"><i class="fa-solid fa-angles-right"></i></button>
+                </div>
+
+                <!-- 0. Monthly Summary -->
+                <div class="card-box summary-card" style="margin-bottom: 20px;">
+                    <div class="summary-row">
+                        <div class="summary-item income">
+                            <span class="label">수익</span>
+                            <span class="val" id="month-summary-income">0</span>
+                        </div>
+                        <div class="summary-divider"></div>
+                        <div class="summary-item expense">
+                            <span class="label">지출</span>
+                            <span class="val" id="month-summary-expense">0</span>
+                        </div>
+                    </div>
+                    <div class="summary-net-row">
+                        <span class="label">합계</span>
+                        <span class="val" id="month-summary-net">0원</span>
+                    </div>
+                </div>
+
+                <div class="card-box">
+                    <h3 class="card-title">달력</h3>
+                    <div id="calendar-grid" class="calendar-container">
+                        <!-- JS injected -->
+                    </div>
+                </div>
+
+                <!-- 2. Yearly List -->
+                <div class="card-box" style="margin-top: 20px;">
+                    <h3 class="card-title">연간 지출 현황</h3>
+
+                    <div class="yearly-table-header">
+                        <span>월</span>
+                        <span>수익</span>
+                        <span>지출</span>
+                        <span>증감</span>
+                    </div>
+                    <div id="yearly-list" class="yearly-list-container">
+                        <!-- JS injected -->
+                    </div>
+                </div>
+
+                <div class="action-buttons" style="margin-top: 20px;">
+                    <button id="btn-export-excel" class="btn-secondary"><i class="fa-solid fa-file-excel"></i> 엑셀로
+                        저장</button>
+                </div>
+            </section>
+
+            <!-- VIEW C: Analysis -->
+            <section id="view-analysis" class="view-section hidden">
+                <!-- Month Nav (Reusing logic in JS) -->
+                <div class="month-nav">
+                    <button id="btn-prev-year-anl" class="nav-arrow"><i class="fa-solid fa-angles-left"></i></button>
+                    <button id="btn-prev-month-anl" class="nav-arrow"><i class="fa-solid fa-caret-left"></i></button>
+                    <h2 id="month-display-anl" class="current-month">--월</h2>
+                    <button id="btn-next-month-anl" class="nav-arrow"><i class="fa-solid fa-caret-right"></i></button>
+                    <button id="btn-next-year-anl" class="nav-arrow"><i class="fa-solid fa-angles-right"></i></button>
+                </div>
+
+                <div class="card-box" style="margin-top: 20px;">
+                    <h3 class="card-title">지출 분석</h3>
+                    <div id="analysis-list" class="analysis-list-container">
+                        <!-- JS injected -->
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Floating Action Button -->
+        <button id="fab-add" class="fab hidden">
+            <i class="fa-solid fa-plus"></i>
+            <span class="fab-label">등록</span>
+        </button>
+
+    </div>
+
+    <!-- Input Modal Overlay -->
+    <div id="modal-input" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>지출/수입 입력</h3>
+
+                <!-- Writer Toggle Switch -->
+                <div class="writer-toggle-container">
+                    <input type="checkbox" id="toggle-writer" class="toggle-checkbox">
+                    <label for="toggle-writer" class="toggle-label">
+                        <span class="toggle-inner"></span>
+                        <span class="toggle-switch"></span>
+                        <span class="label-left">상학</span>
+                        <span class="label-right">다정</span>
+                    </label>
+                </div>
+
+                <button id="close-modal" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="modal-body">
+
+                <!-- Date Input -->
+                <div class="input-group">
+                    <input type="date" id="input-date">
+                </div>
+
+                <!-- Recurring Checkbox REMOVED -->
+
+                <!-- Amount Display -->
+                <div class="amount-display-container">
+                    <button id="btn-recurring" class="btn-recurring">매월</button>
+                    <span class="currency">₩</span>
+                    <input type="tel" id="input-amount" placeholder="0" inputmode="decimal" autocomplete="off">
+                </div>
+
+                <!-- Type Selection (Moved Above Label) -->
+                <div class="type-selector" style="margin-bottom: 20px;">
+                    <button id="btn-type-expense" class="type-btn active">지출</button>
+                    <button id="btn-type-income" class="type-btn">수입</button>
+                </div>
+
+                <!-- Category Selection -->
+                <div class="input-label">분류</div>
+
+                <div id="category-grid" class="category-grid">
+                    <!-- Buttons injected via JS -->
+                </div>
+
+                <!-- Memo -->
+                <div class="input-group">
+                    <input type="text" id="input-memo" placeholder="내용 (선택) #태그">
+                </div>
+            </div>
+
+            <!-- Footer for Save Button -->
+            <div class="modal-footer">
+                <button id="btn-save" class="btn-save">입력 완료</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Modal -->
+    <div id="modal-category" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id="btn-back-category"
+                    style="margin-right: 15px; background:none; border:none; font-size:1.2rem; cursor:pointer;"><i
+                        class="fa-solid fa-arrow-left"></i></button>
+                <h3>카테고리 설정</h3>
+                <button id="close-category" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <!-- Tabs -->
+                <div class="type-selector">
+                    <button id="btn-cat-expense" class="type-btn active">지출</button>
+                    <button id="btn-cat-income" class="type-btn">수입</button>
+                </div>
+                <!-- Add Input -->
+                <div class="input-group" style="display:flex; gap:8px;">
+                    <input type="text" id="input-new-cat" placeholder="새 카테고리 이름">
+                    <button id="btn-add-cat" class="btn-mini" style="width:60px;">추가</button>
+                </div>
+                <!-- List -->
+                <div id="category-list-container" class="category-manager-list">
+                    <!-- JS injected -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recurring Manager Modal -->
+    <div id="modal-recurring" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id="btn-back-recurring"
+                    style="margin-right: 15px; background:none; border:none; font-size:1.2rem; cursor:pointer;"><i
+                        class="fa-solid fa-arrow-left"></i></button>
+                <h3>반복 지출 관리</h3>
+                <button id="close-recurring" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div id="recurring-list-container" class="category-manager-list">
+                    <!-- JS injected -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Settings Modal -->
+    <div id="modal-setting" class="modal-overlay hidden">
+        <div class="modal-content" style="height: auto; max-height: 85vh;">
+            <div class="modal-header">
+                <button id="btn-back-setting"
+                    style="margin-right: 15px; background:none; border:none; font-size:1.2rem; cursor:pointer;"><i
+                        class="fa-solid fa-arrow-left"></i></button>
+                <h3>설정</h3>
+                <button id="close-setting" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="setting-item">
+                    <label>배경화면 변경</label>
+                    <input type="file" id="input-bg-image" accept="image/*">
+                    <button id="btn-reset-bg" class="btn-mini">초기화</button>
+                </div>
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 10px 0;">
+                <div class="setting-item">
+                    <label>카테고리 관리</label>
+                    <button id="btn-category-setting" class="btn-secondary" style="width:100%">설정하기</button>
+                </div>
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 10px 0;">
+                <div class="setting-item">
+                    <label>반복 거래 관리</label>
+                    <button id="btn-recurring-setting" class="btn-secondary" style="width:100%">관리하기</button>
+
+                </div>
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 10px 0;">
+                <div class="setting-item">
+                    <label>폰트 설정</label>
+                    <select id="input-font" class="input-select" style="width: 100%; padding: 8px; margin-top: 5px;">
+                        <option value="default">기본 (고운 돋움)</option>
+                        <option value="system">시스템 폰트 (고딕)</option>
+                        <option value="serif">시스템 폰트 (명조)</option>
+                    </select>
+                </div>
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 10px 0;">
+                <div class="setting-item">
+                    <label>구글 시트 연동</label>
+                    <p class="setting-desc">원하는 자료를 선택하여 연동할 수 있습니다.</p>
+                    <div style="display: flex; gap: 8px; margin-top: 5px;">
+                        <button id="btn-sync-current" class="btn-secondary" style="flex: 1;">구글 시트 (현재)</button>
+                    </div>
+                </div>
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 10px 0;">
+                <div class="setting-item">
+                    <label>데이터 가져오기 (CSV)</label>
+                    <p class="setting-desc">형식: 일자,구분,금액,카테고리,내용</p>
+                    <div class="import-box" style="display:flex; gap:5px; margin-top:5px;">
+                        <input type="file" id="input-import-csv" accept=".csv" style="width: 100%;">
+                        <button id="btn-import-csv" class="btn-secondary" style="white-space: nowrap;">가져오기</button>
+                    </div>
+                </div>
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 10px 0;">
+                <div class="setting-item">
+                    <label>데이터 초기화</label>
+                    <button id="btn-reset-data" class="btn-critical">모든 데이터 삭제</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detail List Modal (for Calendar/Analysis) -->
+    <div id="modal-detail" class="modal-overlay hidden">
+        <div class="modal-content" style="height: 80vh;">
+            <div class="modal-header">
+                <button id="btn-back-detail"
+                    style="margin-right: 15px; background:none; border:none; font-size:1.2rem; cursor:pointer;"><i
+                        class="fa-solid fa-arrow-left"></i></button>
+                <h3 id="detail-title">상세 내역</h3>
+                <button id="close-detail" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" style="padding: 0;">
+                <div id="detail-info-bar" style="padding: 15px; background: #f8f9fa; border-bottom: 1px solid #eee;">
+                    <span id="detail-count" style="font-size: 0.9rem; color: #666;">0건</span>
+                    <span id="detail-total-amount"
+                        style="float: right; font-weight: bold; color: var(--accent-color);">0원</span>
+                </div>
+                <div id="detail-list-container" class="expense-list" style="padding: 10px;">
+                    <!-- JS Injected -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preloaded Data (Temporary) -->
+    <script src="initial_data.js"></script>
+    <script src="app.js?v=100"></script>
+</body>
+
+</html>
