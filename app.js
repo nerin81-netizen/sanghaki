@@ -15,7 +15,7 @@ let state = {
     transactions: [],
     settings: {
         budget: 2000000,
-        defaultWriter: 'husband', // Default to husband if null
+        defaultWriter: 'user1', // Default to user1 if null
         bgImage: null,
         serverUrl: 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec',
         font: 'default' // Default font setting
@@ -28,8 +28,8 @@ let state = {
             '여행/문화', '통신 렌탈 구독료', '보험'
         ],
         income: [
-            '다정월급/민들레,미사초,단기강의', '정아뜰리에', '부수입', '용돈',
-            '미술재료대리구입', '상학월급', '국가지원금'
+            '배우자월급/기타수입', '정아뜰리에', '부수입', '용돈',
+            '미술재료대리구입', '사용자1월급', '국가지원금'
         ]
     },
     currentDate: new Date(),
@@ -501,11 +501,11 @@ function renderUserInfo() {
     if (state.filterUser === 'husband') {
         dom.currentUserDisplay.classList.add('husband');
         icon.innerHTML = '<i class="fa-solid fa-user-tie"></i>';
-        name.textContent = '상학';
+        name.textContent = '용사1';
     } else if (state.filterUser === 'wife') {
         dom.currentUserDisplay.classList.add('wife');
         icon.innerHTML = '<i class="fa-solid fa-user"></i>';
-        name.textContent = '다정';
+        name.textContent = '용사2';
     } else {
         // ALL
         dom.currentUserDisplay.classList.add('all'); // Need CSS for this possibly, or just neutral
