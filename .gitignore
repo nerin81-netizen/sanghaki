@@ -1,0 +1,29 @@
+# OS generated files
+Thumbs.db
+Desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+
+# Node/npm if applicable (though this looks like a static app)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Gemini/Antigravity generated artifacts (typically shouldn't be in project repo)
+.gemini/
+.agent/
+brain/
+interim_results/
+primary_data/
+secondary_data/
+intermediate_results/
+visualizations/
+interim_reports/
+scripts/
+
+# Misc
+*.log
+.env
