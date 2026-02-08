@@ -17,7 +17,7 @@ let state = {
         budget: 2000000,
         defaultWriter: 'husband', // Default to husband if null
         bgImage: null,
-        serverUrl: 'https://script.google.com/macros/s/AKfycbxLcLAMr90qrBJqjbAW1M5gq71SZCjcIKodY0168teNEqnRhT8SvYPXCPZPuPvYMDwg/exec',
+        serverUrl: 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec',
         font: 'default' // Default font setting
     },
     // Default Categories
