@@ -52,7 +52,7 @@
 ## 📫 Connect with Me
 새로운 비즈니스 인사이트, 제약 업계 동향, 혹은 AI 활용법에 대해 이야기 나누고 싶으신 분들은 언제든 환영합니다!
 
-- **Email**: dlghdrus12@naver.com
+- **Email**: yusanghak@naver.com
 - **Interests**: #AI #Startup #Pharma #CSO #Investing #Gahkyebu
 
 ---
