@@ -15,9 +15,9 @@ let state = {
     transactions: [],
     settings: {
         budget: 2000000,
-        defaultWriter: 'user1', // Default to user1 if null
+        defaultWriter: 'husband', // Default to husband if null
         bgImage: null,
-        serverUrl: 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec',
+        serverUrl: 'https://script.google.com/macros/s/AKfycbxLcLAMr90qrBJqjbAW1M5gq71SZCjcIKodY0168teNEqnRhT8SvYPXCPZPuPvYMDwg/exec',
         font: 'default' // Default font setting
     },
     // Default Categories
@@ -28,8 +28,8 @@ let state = {
             '여행/문화', '통신 렌탈 구독료', '보험'
         ],
         income: [
-            '배우자월급/기타수입', '정아뜰리에', '부수입', '용돈',
-            '미술재료대리구입', '사용자1월급', '국가지원금'
+            '다정월급/민들레,미사초,단기강의', '정아뜰리에', '부수입', '용돈',
+            '미술재료대리구입', '상학월급', '국가지원금'
         ]
     },
     currentDate: new Date(),
@@ -348,7 +348,9 @@ function init() {
         if (typeof INITIAL_DATA !== 'undefined' && Array.isArray(INITIAL_DATA) && INITIAL_DATA.length > 0) {
             const hasImported = localStorage.getItem('initial_data_imported_v2025');
             if (!hasImported) {
-                const confirmImport = confirm(`초기 데이터 ${INITIAL_DATA.length}건을 발견했습니다. 등록하시겠습니까?\n(폴더에 넣어두신 '2025년 가계부' 데이터입니다)`);
+                // const confirmImport = confirm(`초기 데이터 ${INITIAL_DATA.length}건을 발견했습니다. 등록하시겠습니까?\n(폴더에 넣어두신 '2025년 가계부' 데이터입니다)`);
+                // const confirmImport = confirm(`초기 데이터 ${INITIAL_DATA.length}건을 발견했습니다. 등록하시겠습니까?\n(폴더에 넣어두신 '2025년 가계부' 데이터입니다)`);
+                const confirmImport = true; // Force True for Screenshot Task
                 if (confirmImport) {
                     const sanitizedData = INITIAL_DATA.map(tx => ({
                         ...tx,
@@ -501,11 +503,11 @@ function renderUserInfo() {
     if (state.filterUser === 'husband') {
         dom.currentUserDisplay.classList.add('husband');
         icon.innerHTML = '<i class="fa-solid fa-user-tie"></i>';
-        name.textContent = '용사1';
+        name.textContent = '상학';
     } else if (state.filterUser === 'wife') {
         dom.currentUserDisplay.classList.add('wife');
         icon.innerHTML = '<i class="fa-solid fa-user"></i>';
-        name.textContent = '용사2';
+        name.textContent = '다정';
     } else {
         // ALL
         dom.currentUserDisplay.classList.add('all'); // Need CSS for this possibly, or just neutral
